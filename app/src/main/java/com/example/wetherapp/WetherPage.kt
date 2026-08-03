@@ -56,6 +56,7 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material3.CardDefaults
 import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -77,6 +78,7 @@ fun WetherPage(modifier: Modifier= Modifier,
         remember {
             LocationServices.getFusedLocationProviderClient(context)
         }
+
     @SuppressLint("MissingPermission")
     fun fetchCurrentLocation() {
 
@@ -105,13 +107,14 @@ fun WetherPage(modifier: Modifier= Modifier,
 
             }
     }
+
     val permissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted ->
 
             if (isGranted) {
-              fetchCurrentLocation()
+                fetchCurrentLocation()
 
 
             }
@@ -137,122 +140,126 @@ fun WetherPage(modifier: Modifier= Modifier,
         }
 
     }
+    val wetherCondition = when (val result = wetherResult.value) {
+        is NetworkResponse.Success -> result.data.current.condition.text
+        else -> "Clear"
+    }
 
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F172A),
-                        Color(0xFF1E3A8A),
-                        Color(0xFF0F172A)
-                    )
-                )
-            )
-            .padding(horizontal = 16.dp)
+    WetherBackground(
+        wetherCondition = wetherCondition
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 12.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.10f)
-                ),
-                border = BorderStroke(
-                    1.dp,
-                    Color.White.copy(alpha = 0.15f)
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp
-                )
-            ) {
 
+            item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-
-                    IconButton(
-                        onClick = {
-                            keyboardcontroller?.hide()
-                            viewModel.getData(city)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = Color.White
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp, bottom = 12.dp),
+                        shape = RoundedCornerShape(30.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White.copy(alpha = 0.10f)
+                        ),
+                        border = BorderStroke(
+                            1.dp,
+                            Color.White.copy(alpha = 0.15f)
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 8.dp
                         )
-                    }
+                    ) {
 
-                    TextField(
-                        value = city,
-                        onValueChange = {
-                            city = it
-                        },
-                        modifier = Modifier.weight(1f),
-                        placeholder = {
-                            Text(
-                                "Search city...",
-                                color = Color.LightGray
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            IconButton(
+                                onClick = {
+                                    keyboardcontroller?.hide()
+                                    viewModel.getData(city)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    tint = Color.White
+                                )
+                            }
+
+                            TextField(
+                                value = city,
+                                onValueChange = {
+                                    city = it
+                                },
+                                modifier = Modifier.weight(1f),
+                                placeholder = {
+                                    Text(
+                                        "Search city...",
+                                        color = Color.LightGray
+                                    )
+                                },
+                                singleLine = true,
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+
+                                    cursorColor = Color.White,
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White
+                                )
                             )
-                        },
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
 
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-
-                            cursorColor = Color.White,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
-                        )
-                    )
-
-                    IconButton(
-                        onClick = {
-                            fetchCurrentLocation()
+                            IconButton(
+                                onClick = {
+                                    fetchCurrentLocation()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.LocationOn,
+                                    contentDescription = "Current Location",
+                                    tint = Color.White
+                                )
+                            }
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = "Current Location",
-                            tint = Color.White
-                        )
                     }
                 }
-            }
-        }
 
-        when (val result = wetherResult.value) {
-            is NetworkResponse.Error -> {
-                Text(text = result.message)
             }
 
-            NetworkResponse.Loading -> {
-                CircularProgressIndicator()
-            }
+            item {
+                when (val result = wetherResult.value) {
+                    is NetworkResponse.Error -> {
+                        Text(text = result.message)
+                    }
 
-            is NetworkResponse.Success -> {
-                WetherDetails(data = result.data)
-            }
+                    NetworkResponse.Loading -> {
+                        CircularProgressIndicator()
+                    }
 
-            null -> {}
+                    is NetworkResponse.Success -> {
+                        WetherDetails(data = result.data)
+                    }
+
+                    null -> {}
+                }
+            }
         }
     }
 }
