@@ -1,4 +1,4 @@
-package com.example.wetherapp
+package com.example.wetherapp.Effects
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,7 @@ private const val MIN_LENGTH = 15f
 private const val MAX_LENGTH = 35f
 private const val WIND = 1.5f
 
-private const val CLOUD_BOTTOM = 220f
+private const val CLOUD_BOTTOM = 320f
 
 @Composable
 fun RainEffect() {
@@ -26,7 +26,7 @@ fun RainEffect() {
     val rainParticles = remember {
         MutableList(DROP_COUNT){
 
-            RainParticle(
+            _root_ide_package_.com.example.wetherapp.RainParticle(
 
                 position = Offset(
                     Random.nextFloat() * 1200f,
@@ -40,7 +40,7 @@ fun RainEffect() {
 
                 alpha = Random.nextFloat() * 0.5f + 0.3f,
 
-                        wind = Random.nextFloat() * 3f + 2f,
+                wind = Random.nextFloat() * 3f + 2f,
 
                 layer = Random.nextInt(1, 4)
 
@@ -83,7 +83,7 @@ fun RainEffect() {
 
                 particle.position = Offset(
                     Random.nextFloat() * size.width,
-                    CLOUD_BOTTOM + Random.nextFloat() * 60f
+                    CLOUD_BOTTOM + Random.nextFloat() * 40f
                 )
 
 

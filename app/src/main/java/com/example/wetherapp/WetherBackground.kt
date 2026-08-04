@@ -7,10 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Offset
+
+import com.example.wetherapp.Effects.FogEffect
 
 @Composable
 fun WetherBackground(
@@ -74,7 +75,8 @@ fun WetherBackground(
             .background(backgroundBrush)
     ) {
         CloudEffect()
-RainEffect()
+        _root_ide_package_.com.example.wetherapp.Effects.RainEffect()
+        FogEffect()
         content()
     }
 }
